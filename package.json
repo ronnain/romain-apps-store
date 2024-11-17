@@ -2,7 +2,9 @@
   "name": "@romain-apps-store/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "update:supabase:type": "supabase gen types typescript --project-id jthjwuzykrmkidjphnoh --schema public > apps/front/src/supabase-types.ts"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~18.2.0",
@@ -13,6 +15,9 @@
     "@angular/platform-browser": "~18.2.0",
     "@angular/platform-browser-dynamic": "~18.2.0",
     "@angular/router": "~18.2.0",
+    "@state-adapt/angular": "^2.0.8",
+    "@state-adapt/core": "^2.0.8",
+    "@state-adapt/rxjs": "^2.0.8",
     "@supabase/supabase-js": "^2.46.1",
     "rxjs": "~7.8.0",
     "zone.js": "~0.14.3"

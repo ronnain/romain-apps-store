@@ -5,10 +5,11 @@ import {
   createClient,
   EmailOtpType,
   Session,
-  SupabaseClient,
 } from '@supabase/supabase-js';
 import { environment } from '../../../environment/environment';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, shareReplay } from 'rxjs';
+import { toSource } from '@state-adapt/rxjs';
+import { Database } from '../../../supabase-types';
 
 export interface Profile {
   id?: string;
@@ -21,22 +22,24 @@ export interface Profile {
   providedIn: 'root',
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
+  public readonly supabase = createClient<Database>(
+    environment.supabaseUrl,
+    environment.supabaseKey
+  );
   _session: AuthSession | null = null;
 
-  public authChange$ = new ReplaySubject<{
+  private _authChange$ = new ReplaySubject<{
     event: AuthChangeEvent;
     session: Session | null;
   }>();
 
-  constructor() {
-    this.supabase = createClient(
-      environment.supabaseUrl,
-      environment.supabaseKey
-    );
+  public authChange$ = this._authChange$
+    .asObservable()
+    .pipe(shareReplay(1), toSource('authChange'));
 
+  constructor() {
     this.authChanges((event, session) => {
-      this.authChange$.next({ event, session });
+      this._authChange$.next({ event, session });
     });
   }
 
